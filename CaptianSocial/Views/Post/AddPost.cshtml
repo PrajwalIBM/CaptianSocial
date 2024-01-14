@@ -1,0 +1,23 @@
+﻿@model CaptianSocial.Models.AddPostViewModel
+@using CaptianSocial.Models
+@{
+}
+<h3 class="display-6">Add Post:</h3>
+<div class="mt-4">
+    <form method="post">
+        <div class="mt-2">
+            <label for="Description" class="form-label">Write Some Text:</label>
+            <input type="text" class="form-control" asp-for="Description" />
+        </div>
+        <div class="mt-2">
+            <label for="Image" class="form-label">Insert Image by entering the URL.</label>
+            <input type="url" class="form-control" asp-for="ImageURL" />
+        </div>
+        <div class="mt-4">
+            <input type="submit" class="btn btn-primary" placeholder="Submit" />
+        </div>
+    </form>
+</div>
+<div class="login-page-background-container p-3 mt-5">
+    <img src="~/lib/assets/share.png" asp-append-version="true" alt="Share background image" class="col-lg-10" />
+</div>

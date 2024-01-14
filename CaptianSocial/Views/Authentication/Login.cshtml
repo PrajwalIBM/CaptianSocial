@@ -1,0 +1,25 @@
+﻿@model CaptianSocial.Models.LoginViewModel
+@{
+}
+@* <div class="login_page"> *@
+    <div class="login-container" style="width: 60vw;">
+        <h1 class="display-6">Login Page:</h1>
+        <div class="mt-3">
+            <form method="post">
+                <div class="mt-2">
+                    <label for="Name" class="form-label">Name</label>
+                    <input type="text" class="form-control" asp-for="Name" />
+                </div>
+                <div class="mt-2">
+                    <label for="Password" class="form-label">Password</label>
+                    <input type="password" class="form-control" asp-for="Password" />
+                </div>
+                <div class="mt-4">
+                    <input type="submit" class="btn btn-primary" placeholder="Submit" />
+                </div>
+            </form>
+        </div>
+         <div class="login-page-background-container p-3 mt-5">
+            <img src="~/lib/assets/login.png" asp-append-version="true" alt="login background image" class="col-lg-10" />
+        </div>
+    </div>

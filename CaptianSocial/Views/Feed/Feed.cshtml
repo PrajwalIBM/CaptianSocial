@@ -1,0 +1,209 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<CaptianSocial.Models.Entities.Post>
+<style>
+    .reaction-button {
+        padding: 8px 12px;
+        margin: 4px;
+        cursor: pointer;
+    }
+    .active{
+        background-color: #161616;
+        color: #f5f5f5;
+    }
+    .reacted {
+        background-color: #cce5ff; /* Light blue background color when reacted */
+    }
+</style>
+<h2 class="display-4 mt-5 mb-5">Welcome back, @ViewBag.Username<br> here is your Feed Page.</h2>
+@* @Html.Partial("~/Views/Post/AddPost.cshtml", new AddPostViewModel()) *@
+<div class="PostsContainer mt-5">
+    @functions {
+        // Helper method to check if the user has reacted with a specific type
+        bool HasReacted(string reactionType, Guid postId)
+        {
+            var reactionsForPost = ViewBag.ReactionsForPost as List<AddReactionViewModel>;
+
+            if (reactionsForPost != null)
+            {
+                // Check if the user has reacted with the specified type
+                return reactionsForPost.Any(r => r.ReactionType == int.Parse(reactionType) && r.PostId == postId);
+            }
+
+            return false;
+        }
+    }
+    @foreach (var post in Model)
+        {
+            <div class="card mb-5">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6>@post.AuthorName</h6>
+                </div>
+                <img src="@post.ImageURL" class="card-img-top" alt="User Posted Image">
+                <div class="card-body">
+                    <h5 class="card-title mt-2">@post.Description</h5>
+                    <div class="reaction-button-container mt-4">
+                    <button class="btn btn-outline-primary reaction-button @(HasReacted("0", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="0">Like</button>
+                    <button class="btn btn-outline-danger reaction-button @(HasReacted("1", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="1">Love</button>
+                    <button class="btn btn-outline-warning reaction-button @(HasReacted("2", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="2">HAHA</button>
+                    <button class="btn btn-outline-secondary reaction-button @(HasReacted("3", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="3">Sad</button>
+                    <button class="btn btn-outline-success reaction-button @(HasReacted("4", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="4">Appreciation</button>
+                    </div>
+                </div>
+            </div>
+
+
+            @* <div class="post mb-3">
+                <div class="author">
+                    <h6>@post.AuthorName</h6>
+                    <p>Date: @post.PublishedDate</p>
+                </div>
+                <div class="Description">
+                    @post.Description
+                </div>
+                <img src="@post.ImageURL" alt="post image" />
+                <div class="reaction-button-container">
+                    <button class="btn btn-outline-primary reaction-button" data-post-id="@post.Id" data-reaction-type="0">Like</button>
+                    <button class="btn btn-outline-danger reaction-button" data-post-id="@post.Id" data-reaction-type="1">Love</button>
+                    <button class="btn btn-outline-warning reaction-button" data-post-id="@post.Id" data-reaction-type="2">HAHA</button>
+                    <button class="btn btn-outline-secondary reaction-button" data-post-id="@post.Id" data-reaction-type="3">Sad</button>
+                    <button class="btn btn-outline-success reaction-button" data-post-id="@post.Id" data-reaction-type="4">Appreciation</button>
+                </div>
+                @* @using (Html.BeginForm("SubmitComment", "Comment", FormMethod.Post, new { @class = "post-comment-form" }))
+                {
+                    <!-- Hidden input for post ID in the comment form -->
+                    <input type="hidden" asp-for="PostId" value="@post.Id">
+
+                    <div class="mb-3">
+                        <label asp-for="Message" class="form-label">Your Comment:</label>
+                        <textarea asp-for="Message" class="form-control comment-text" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                }
+                <!-- Comments container -->
+                <div class="comments-container">
+                    <!-- Template comment (replace with a loop in your actual implementation) -->
+                    <div class="comment post-comment" data-postid="@post.Id">
+                        <strong>User Name:</strong>
+                        <p>Comment text goes here...</p>
+                    </div>
+                </div>
+            </div>  *@
+        }
+</div>
+<script>
+    // Logic to Add a Reaction!
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener to each reaction button
+        var reactionButtons = document.querySelectorAll('.reaction-button');
+        reactionButtons.forEach(function (button) {
+            button.addEventListener('click', async function () {
+                // Extract data attributes
+                var postId = button.getAttribute('data-post-id');
+                var reactionType = button.getAttribute('data-reaction-type');
+
+                // Update UI immediately to provide feedback
+                button.classList.add('reacted');
+
+                // Make an AJAX request to handle the reaction
+                await submitReaction(postId, reactionType);
+
+                // Optionally, you can reset the button state after a delay
+                setTimeout(function () {
+                    button.classList.remove('reacted');
+                }, 1000);
+            });
+        });
+
+        async function submitComment(commentText, postId) {
+            console.log("Trying to submit the comment", commentText, postId);
+            try {
+                // Replace the URL with your actual endpoint
+                const response = await fetch('/Comment/SubmitComment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        PostId: postId,
+                        Message: commentText
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Optionally handle the response if needed
+                const responseData = await response.json();
+                console.log(responseData);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+    });
+@* 
+    // Logic to Submit the Comment!
+    document.addEventListener('DOMContentLoaded', function () {
+        // Submit comment form via AJAX
+        document.querySelectorAll('.post-comment-form').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                // Get comment text and post ID from the textarea and hidden input within the form
+                var commentText = form.querySelector('.comment-text').value;
+                var postID = form.querySelector('.post-id').value;
+
+                // Make an AJAX request to submit the comment
+                submitComment(commentText, postID, form);
+            });
+        });
+
+        // Function to make an AJAX request to submit a comment
+        async function submitComment(commentText, postId, form) {
+            console.log("Trying to submit the comment", commentText, postId);
+            try {
+                // Prepare the data to be sent in the request body
+                const data = {
+                    PostId: postId,
+                    Message: commentText
+                };
+                // Replace the URL with your actual endpoint
+                const response = await fetch('/Comment/SubmitComment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Optionally handle the response if needed
+                const responseData = await response.json();
+                console.log(responseData);
+
+                // Clear the textarea after successful submission
+                form.querySelector('.comment-text').value = '';
+
+                // Update the UI to display the new comment (append to the comments container)
+                const commentsContainer = form.closest('.comments-container');
+                const newComment = document.createElement('div');
+                newComment.classList.add('comment', 'post-comment');
+                newComment.setAttribute('data-postid', postId);
+                newComment.innerHTML = `
+                    <strong>User Name:</strong>
+                    <p>${commentText}</p>
+                `;
+                commentsContainer.appendChild(newComment);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+    }); *@
+</script>
