@@ -70,7 +70,6 @@ namespace CaptianSocial.Controllers
                     return StatusCode(500, "Internal Server Error, something didn't go accorinding to plan!");
                 }
             }
-
             // Return a response in case of an error
             return Json(new { success = false, message = "Invalid data received" });
         }

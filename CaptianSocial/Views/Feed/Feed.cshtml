@@ -118,18 +118,17 @@
             });
         });
 
-        async function submitComment(commentText, postId) {
-            console.log("Trying to submit the comment", commentText, postId);
+        async function submitReaction(postId, reactionType) {
             try {
                 // Replace the URL with your actual endpoint
-                const response = await fetch('/Comment/SubmitComment', {
+                const response = await fetch('/Reaction/SubmitReaction', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         PostId: postId,
-                        Message: commentText
+                        ReactionType: reactionType
                     })
                 });
 
