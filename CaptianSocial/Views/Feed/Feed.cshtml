@@ -1,9 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model List<CaptianSocial.Models.Entities.Post>
+﻿@model List<CaptianSocial.Models.Entities.Post>
 <style>
     .reaction-button {
         padding: 8px 12px;
@@ -21,21 +16,6 @@
 <h2 class="display-4 mt-5 mb-5">Welcome back, @ViewBag.Username<br> here is your Feed Page.</h2>
 @* @Html.Partial("~/Views/Post/AddPost.cshtml", new AddPostViewModel()) *@
 <div class="PostsContainer mt-5">
-    @functions {
-        // Helper method to check if the user has reacted with a specific type
-        bool HasReacted(string reactionType, Guid postId)
-        {
-            var reactionsForPost = ViewBag.ReactionsForPost as List<AddReactionViewModel>;
-
-            if (reactionsForPost != null)
-            {
-                // Check if the user has reacted with the specified type
-                return reactionsForPost.Any(r => r.ReactionType == int.Parse(reactionType) && r.PostId == postId);
-            }
-
-            return false;
-        }
-    }
     @foreach (var post in Model)
         {
             <div class="card mb-5">
@@ -46,11 +26,11 @@
                 <div class="card-body">
                     <h5 class="card-title mt-2">@post.Description</h5>
                     <div class="reaction-button-container mt-4">
-                    <button class="btn btn-outline-primary reaction-button @(HasReacted("0", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="0">Like</button>
-                    <button class="btn btn-outline-danger reaction-button @(HasReacted("1", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="1">Love</button>
-                    <button class="btn btn-outline-warning reaction-button @(HasReacted("2", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="2">HAHA</button>
-                    <button class="btn btn-outline-secondary reaction-button @(HasReacted("3", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="3">Sad</button>
-                    <button class="btn btn-outline-success reaction-button @(HasReacted("4", @post.Id) ? "active" : "")" data-post-id="@post.Id" data-reaction-type="4">Appreciation</button>
+                    <button class="btn btn-outline-primary reaction-button" data-post-id="@post.Id" data-reaction-type="0">Like</button>
+                    <button class="btn btn-outline-danger reaction-button" data-post-id="@post.Id" data-reaction-type="1">Love</button>
+                    <button class="btn btn-outline-warning reaction-button" data-post-id="@post.Id" data-reaction-type="2">HAHA</button>
+                    <button class="btn btn-outline-secondary reaction-button" data-post-id="@post.Id" data-reaction-type="3">Sad</button>
+                    <button class="btn btn-outline-success reaction-button" data-post-id="@post.Id" data-reaction-type="4">Appreciation</button>
                     </div>
                 </div>
             </div>

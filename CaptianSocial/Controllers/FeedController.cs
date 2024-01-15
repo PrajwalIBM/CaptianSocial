@@ -27,7 +27,7 @@ namespace CaptianSocial.Controllers
             if(session.GetString("username") != null)
             {
                 var userId = Guid.Parse(session.GetString("userid"));
-                var reactionsForPost = await dbContext.Reactions.SingleOrDefaultAsync(r => r.UserID == userId);
+                var reactionsForPost = await dbContext.Reactions.Where(r => r.UserID == userId).ToListAsync();
 
                 // Pass the data to the view
                 ViewBag.ReactionsForPost = reactionsForPost;
